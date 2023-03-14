@@ -1,2 +1,2 @@
-# music-module
-Module for Music operations for the Striber Discord bot
+# Music Module
+Module for music operations for the Striber Discord bot
