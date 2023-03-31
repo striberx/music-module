@@ -18,19 +18,20 @@
     "url": "git+https://github.com/striberx/dnd-module.git"
   },
   "dependencies": {
-    "discord-api-types": "^0.37.36"
+    "discord-api-types": "^0.37.37",
+    "moonlink.js": "^1.11.42"
   },
   "devDependencies": {
-    "@types/node": "^18.15.2",
-    "@typescript-eslint/eslint-plugin": "^5.55.0",
-    "@typescript-eslint/parser": "^5.55.0",
-    "eslint": "^8.36.0",
-    "eslint-config-prettier": "^8.7.0",
+    "@types/node": "^18.15.11",
+    "@typescript-eslint/eslint-plugin": "^5.57.0",
+    "@typescript-eslint/parser": "^5.57.0",
+    "eslint": "^8.37.0",
+    "eslint-config-prettier": "^8.8.0",
     "eslint-plugin-prettier": "^4.2.1",
     "husky": "^8.0.3",
     "lint-staged": "^13.2.0",
-    "prettier": "^2.8.4",
-    "typescript": "^4.9.5"
+    "prettier": "^2.8.7",
+    "typescript": "^5.0.3"
   },
   "lint-staged": {
     "*.{js,jsx,ts,tsx}": "eslint --cache --fix"
