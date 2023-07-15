@@ -26,8 +26,10 @@ export default async function play(music: MoonlinkManager, query: string, cmd: A
     player = await music.players.create({
       guildId: cmd.guild_id,
       voiceChannel: vc,
-      textChannel: cmd.channel_id,
+      textChannel: cmd.channel?.id ?? '',
     });
+
+  if (!player) return;
 
   if (player && player.voiceChannel !== vc) {
     // Player is already playing music in a different channel
@@ -45,9 +47,6 @@ export default async function play(music: MoonlinkManager, query: string, cmd: A
   let tracks;
 
   switch (results.loadType) {
-    case LoadTypes.LoadFailed:
-      // TODO: On loadfailed, retry ~3 times
-      return { response: ProcessResponses.LoadFailed } as ProcessResponseType;
     case LoadTypes.NoMatches:
       return { response: ProcessResponses.NoMatches } as ProcessResponseType;
     case LoadTypes.PlaylistLoaded:
@@ -63,6 +62,10 @@ export default async function play(music: MoonlinkManager, query: string, cmd: A
       playResponse.response = ProcessResponses.TrackLoaded;
       break;
     }
+    case LoadTypes.LoadFailed:
+    default:
+      // TODO: On loadfailed, retry ~3 times
+      return { response: ProcessResponses.LoadFailed } as ProcessResponseType;
   }
 
   if (!player?.connected) {

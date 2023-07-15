@@ -3,15 +3,17 @@ import { ProcessResponses } from '../helpers/enums';
 import type { ProcessResponseType } from '../helpers/types';
 
 /**
- * Removes a track from the lavalink player
+ * Loops lavalink player
  *
  * @param music - MoonlinkManager
  * @param guildId - Guild ID that the player is in
- * @param trackIndex - Index of the track to remove
+ * @param loop - Value to represent loop type (1 - Track, 2 - Queue)
  * @returns Object containing a response of ProcessResponseType
  */
-export default async function remove(music: MoonlinkManager, guildId: string, trackIndex: number) {
+export default async function disconnect(music: MoonlinkManager, guildId: string, loop: string | number) {
   const playResponse = {} as ProcessResponseType;
+
+  console.log(loop);
 
   const player = music.players.get(guildId);
   if (!player?.connected) {
@@ -19,13 +21,9 @@ export default async function remove(music: MoonlinkManager, guildId: string, tr
     return playResponse;
   }
 
-  const removedTrack = player.queue.remove(trackIndex - 1);
-  if (!removedTrack) {
-    playResponse.response = ProcessResponses.NoTrackRemoved;
-    return playResponse;
-  }
+  player.disconnect();
+  player.destroy();
 
-  playResponse.response = ProcessResponses.TrackRemoved;
-  playResponse.trackInfo = removedTrack;
+  playResponse.response = ProcessResponses.PlayerDisconnected;
   return playResponse;
 }

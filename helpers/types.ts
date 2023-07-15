@@ -2,6 +2,6 @@ import { ProcessResponses } from './enums';
 
 export type ProcessResponseType = {
   response?: ProcessResponses;
-  trackInfo?: unknown;
+  trackInfo?: unknown; // Set to MoonlinkTrack later
   playlistInfo?: unknown;
 };
