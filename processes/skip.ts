@@ -1,4 +1,4 @@
-import { MoonlinkManager } from 'moonlink.js';
+import type { MoonlinkManager } from 'moonlink.js';
 import { ProcessResponses } from '../helpers/enums';
 import type { ProcessResponseType } from '../helpers/types';
 
@@ -23,7 +23,7 @@ export default async function skip(music: MoonlinkManager, guildId: string) {
     return playResponse;
   }
 
-  player.skip();
+  await player.skip();
 
   playResponse.response = ProcessResponses.TrackSkipped;
   return playResponse;

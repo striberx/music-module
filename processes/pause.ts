@@ -18,7 +18,7 @@ export default async function pause(music: MoonlinkManager, guildId: string) {
     return playResponse;
   }
 
-  if (!player.paused) player.pause();
+  await player.pause();
 
   playResponse.response = ProcessResponses.PlayerPaused;
   return playResponse;

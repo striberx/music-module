@@ -1,4 +1,4 @@
-import { MoonlinkManager } from 'moonlink.js';
+import type { MoonlinkManager } from 'moonlink.js';
 import { ProcessResponses } from '../helpers/enums';
 import type { ProcessResponseType } from '../helpers/types';
 
@@ -7,23 +7,31 @@ import type { ProcessResponseType } from '../helpers/types';
  *
  * @param music - MoonlinkManager
  * @param guildId - Guild ID that the player is in
- * @param loop - Value to represent loop type (1 - Track, 2 - Queue)
+ * @param loopType - Value to represent loop type (0 - Disabled, 1 - Track, 2 - Queue)
  * @returns Object containing a response of ProcessResponseType
  */
-export default async function disconnect(music: MoonlinkManager, guildId: string, loop: string | number) {
-  const playResponse = {} as ProcessResponseType;
-
-  console.log(loop);
+export default async function loop(music: MoonlinkManager, guildId: string, loopType: number) {
+  const processResponse = {} as ProcessResponseType;
 
   const player = music.players.get(guildId);
   if (!player?.connected) {
-    playResponse.response = ProcessResponses.NoPlayer;
-    return playResponse;
+    processResponse.response = ProcessResponses.NoPlayer;
+    return processResponse;
   }
 
-  player.disconnect();
-  player.destroy();
+  player.setLoop(loopType === 0 ? null : loopType);
 
-  playResponse.response = ProcessResponses.PlayerDisconnected;
-  return playResponse;
+  switch (loopType) {
+    case 0:
+      processResponse.response = ProcessResponses.LoopDisabled;
+      break;
+    case 1:
+      processResponse.response = ProcessResponses.LoopModeTrack;
+      break;
+    case 2:
+      processResponse.response = ProcessResponses.LoopModeQueue;
+      break;
+  }
+
+  return processResponse;
 }

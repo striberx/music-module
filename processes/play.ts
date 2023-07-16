@@ -1,7 +1,17 @@
-import { MoonlinkManager } from 'moonlink.js';
+import type { MoonlinkManager, MoonlinkPlayer, MoonlinkTrack, SearchResult } from 'moonlink.js';
 import type { APIInteraction } from 'discord-api-types/v10';
 import { LoadTypes, ProcessResponses } from '../helpers/enums';
 import type { ProcessResponseType } from '../helpers/types';
+
+function addTracks(player: MoonlinkPlayer, tracks: MoonlinkTrack | MoonlinkTrack[]) {
+  if (Array.isArray(tracks)) {
+    for (const track of tracks) {
+      player.queue.add(track);
+    }
+  } else {
+    player.queue.add(tracks);
+  }
+}
 
 /**
  * Plays music through lavalink player
@@ -10,15 +20,19 @@ import type { ProcessResponseType } from '../helpers/types';
  * @param query - Music search query
  * @param cmd - Discord API Interaction
  * @param vc - Voice channel id requesting user is in
+ * @param next - (optional) - Add to the top of queue
  * @returns Object containing a response of ProcessResponseType
  */
 export default async function play(music: MoonlinkManager, query: string, cmd: APIInteraction, vc: string, next?: boolean) {
-  if (!cmd.guild_id) {
-    console.warn('Play process is missing guild id');
-    return;
-  }
-
   const playResponse = {} as ProcessResponseType;
+
+  if (!cmd.guild_id) {
+    // Should be unreachable but let's catch it
+    console.warn('Play process is missing guild id');
+
+    playResponse.response = ProcessResponses.NoPlayer;
+    return playResponse;
+  }
 
   let player = music.players.has(cmd.guild_id) ? music.players.get(cmd.guild_id) : undefined;
 
@@ -29,7 +43,12 @@ export default async function play(music: MoonlinkManager, query: string, cmd: A
       textChannel: cmd.channel?.id ?? '',
     });
 
-  if (!player) return;
+  if (!player) {
+    // Player failed to create for whatever reason
+    // Hopefully we never get here but who knows
+    playResponse.response = ProcessResponses.NoPlayer;
+    return playResponse;
+  }
 
   if (player && player.voiceChannel !== vc) {
     // Player is already playing music in a different channel
@@ -37,7 +56,7 @@ export default async function play(music: MoonlinkManager, query: string, cmd: A
     return playResponse;
   }
 
-  let results;
+  let results = {} as SearchResult;
   if (music.spotify.check(query)) {
     results = await music.spotify.fetch(query);
   } else {
@@ -64,7 +83,6 @@ export default async function play(music: MoonlinkManager, query: string, cmd: A
     }
     case LoadTypes.LoadFailed:
     default:
-      // TODO: On loadfailed, retry ~3 times
       return { response: ProcessResponses.LoadFailed } as ProcessResponseType;
   }
 
@@ -73,13 +91,15 @@ export default async function play(music: MoonlinkManager, query: string, cmd: A
   }
 
   if (next) {
-    const currentQueue = await player.queue.all;
-    await player.queue.clear();
-    await player.queue.add(tracks);
-    await player.queue.add(currentQueue);
+    const currentQueue = (await player.queue.all) as MoonlinkTrack[];
+    player.queue.clear();
+    addTracks(player, tracks);
+    addTracks(player, currentQueue);
   } else {
-    await player.queue.add(tracks);
+    addTracks(player, tracks);
   }
+
+  // TODO: Add caching
 
   if (!player.playing) {
     await player.play();

@@ -3,13 +3,13 @@ import { ProcessResponses } from '../helpers/enums';
 import type { ProcessResponseType } from '../helpers/types';
 
 /**
- * Disconncts and destroys lavalink player
+ * Resumes lavalink player
  *
  * @param music - MoonlinkManager
  * @param guildId - Guild ID that the player is in
  * @returns Object containing a response of ProcessResponseType
  */
-export default async function disconnect(music: MoonlinkManager, guildId: string) {
+export default async function pause(music: MoonlinkManager, guildId: string) {
   const playResponse = {} as ProcessResponseType;
 
   const player = music.players.get(guildId);
@@ -18,9 +18,13 @@ export default async function disconnect(music: MoonlinkManager, guildId: string
     return playResponse;
   }
 
-  player.disconnect();
-  await player.destroy();
+  if (!player?.paused) {
+    playResponse.response = ProcessResponses.PlayerBusy;
+    return playResponse;
+  }
 
-  playResponse.response = ProcessResponses.PlayerDisconnected;
+  await player.resume();
+
+  playResponse.response = ProcessResponses.PlayerResumed;
   return playResponse;
 }

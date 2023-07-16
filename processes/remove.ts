@@ -1,4 +1,4 @@
-import { MoonlinkManager } from 'moonlink.js';
+import type { MoonlinkManager } from 'moonlink.js';
 import { ProcessResponses } from '../helpers/enums';
 import type { ProcessResponseType } from '../helpers/types';
 
@@ -19,6 +19,13 @@ export default async function remove(music: MoonlinkManager, guildId: string, tr
     return playResponse;
   }
 
+  if (player.queue.size === 0n) {
+    playResponse.response = ProcessResponses.PlaylistEmpty;
+    return playResponse;
+  }
+
+  // TODO: RemovedTrack currently returns a boolean
+  // In a future update of Moonlink it will return the track info
   const removedTrack = player.queue.remove(trackIndex - 1);
   if (!removedTrack) {
     playResponse.response = ProcessResponses.NoTrackRemoved;
@@ -26,6 +33,6 @@ export default async function remove(music: MoonlinkManager, guildId: string, tr
   }
 
   playResponse.response = ProcessResponses.TrackRemoved;
-  playResponse.trackInfo = removedTrack;
+  // playResponse.trackInfo = removedTrack;
   return playResponse;
 }
