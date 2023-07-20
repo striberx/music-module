@@ -19,12 +19,12 @@
   },
   "dependencies": {
     "discord-api-types": "^0.37.48",
-    "moonlink.js": "^2.4.14"
+    "magmastream": "^2.0.6"
   },
   "devDependencies": {
     "@types/node": "^20.4.2",
-    "@typescript-eslint/eslint-plugin": "^6.0.0",
-    "@typescript-eslint/parser": "^6.0.0",
+    "@typescript-eslint/eslint-plugin": "^6.1.0",
+    "@typescript-eslint/parser": "^6.1.0",
     "eslint": "^8.45.0",
     "eslint-config-prettier": "^8.8.0",
     "eslint-plugin-prettier": "^5.0.0",

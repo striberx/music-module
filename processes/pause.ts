@@ -1,24 +1,24 @@
-import { MoonlinkManager } from 'moonlink.js';
+import type { Manager } from 'magmastream';
 import { ProcessResponses } from '../helpers/enums';
 import type { ProcessResponseType } from '../helpers/types';
 
 /**
  * Pauses lavalink player
  *
- * @param music - MoonlinkManager
+ * @param music - Manager
  * @param guildId - Guild ID that the player is in
  * @returns Object containing a response of ProcessResponseType
  */
-export default async function pause(music: MoonlinkManager, guildId: string) {
+export default async function pause(music: Manager, guildId: string) {
   const playResponse = {} as ProcessResponseType;
 
   const player = music.players.get(guildId);
-  if (!player?.connected) {
+  if (!player) {
     playResponse.response = ProcessResponses.NoPlayer;
     return playResponse;
   }
 
-  await player.pause();
+  if (!player.paused) player.pause(true);
 
   playResponse.response = ProcessResponses.PlayerPaused;
   return playResponse;

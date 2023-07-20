@@ -1,31 +1,29 @@
-import type { MoonlinkManager } from 'moonlink.js';
+import type { Manager } from 'magmastream';
 import { ProcessResponses } from '../helpers/enums';
 import type { ProcessResponseType } from '../helpers/types';
 
 /**
  * Removes a track from the lavalink player
  *
- * @param music - MoonlinkManager
+ * @param music - Manager
  * @param guildId - Guild ID that the player is in
  * @param trackIndex - Index of the track to remove
  * @returns Object containing a response of ProcessResponseType
  */
-export default async function remove(music: MoonlinkManager, guildId: string, trackIndex: number) {
+export default async function remove(music: Manager, guildId: string, trackIndex: number) {
   const playResponse = {} as ProcessResponseType;
 
   const player = music.players.get(guildId);
-  if (!player?.connected) {
+  if (!player) {
     playResponse.response = ProcessResponses.NoPlayer;
     return playResponse;
   }
 
-  if (player.queue.size === 0n) {
+  if (player.queue.size) {
     playResponse.response = ProcessResponses.PlaylistEmpty;
     return playResponse;
   }
 
-  // TODO: RemovedTrack currently returns a boolean
-  // In a future update of Moonlink it will return the track info
   const removedTrack = player.queue.remove(trackIndex - 1);
   if (!removedTrack) {
     playResponse.response = ProcessResponses.NoTrackRemoved;
@@ -33,6 +31,6 @@ export default async function remove(music: MoonlinkManager, guildId: string, tr
   }
 
   playResponse.response = ProcessResponses.TrackRemoved;
-  // playResponse.trackInfo = removedTrack;
+  playResponse.trackInfo = removedTrack[0];
   return playResponse;
 }

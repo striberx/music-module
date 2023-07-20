@@ -1,25 +1,25 @@
-import type { MoonlinkManager } from 'moonlink.js';
+import type { Manager } from 'magmastream';
 import { ProcessResponses } from '../helpers/enums';
 import type { ProcessResponseType } from '../helpers/types';
 
 /**
  * Disconncts and destroys lavalink player
  *
- * @param music - MoonlinkManager
+ * @param music - Manager
  * @param guildId - Guild ID that the player is in
  * @returns Object containing a response of ProcessResponseType
  */
-export default async function disconnect(music: MoonlinkManager, guildId: string) {
+export default async function disconnect(music: Manager, guildId: string) {
   const playResponse = {} as ProcessResponseType;
 
   const player = music.players.get(guildId);
-  if (!player?.connected) {
+  if (!player) {
     playResponse.response = ProcessResponses.NoPlayer;
     return playResponse;
   }
 
   player.disconnect();
-  await player.destroy();
+  player.destroy();
 
   playResponse.response = ProcessResponses.PlayerDisconnected;
   return playResponse;

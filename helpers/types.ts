@@ -1,8 +1,8 @@
-import { MoonlinkTrack } from 'moonlink.js';
 import { ProcessResponses } from './enums';
+import { PlaylistData, Track, UnresolvedTrack } from 'magmastream';
 
 export type ProcessResponseType = {
   response?: ProcessResponses;
-  trackInfo?: MoonlinkTrack;
-  playlistInfo?: unknown;
+  trackInfo?: Track | UnresolvedTrack;
+  playlistInfo?: PlaylistData;
 };

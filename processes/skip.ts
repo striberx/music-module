@@ -1,19 +1,19 @@
-import type { MoonlinkManager } from 'moonlink.js';
+import type { Manager } from 'magmastream';
 import { ProcessResponses } from '../helpers/enums';
 import type { ProcessResponseType } from '../helpers/types';
 
 /**
  * Skip current track playing on lavalink player
  *
- * @param music - MoonlinkManager
+ * @param music - Manager
  * @param guildId - Guild ID that the player is in
  * @returns Object containing a response of ProcessResponseType
  */
-export default async function skip(music: MoonlinkManager, guildId: string) {
+export default async function skip(music: Manager, guildId: string) {
   const playResponse = {} as ProcessResponseType;
 
   const player = music.players.get(guildId);
-  if (!player?.connected) {
+  if (!player) {
     playResponse.response = ProcessResponses.NoPlayer;
     return playResponse;
   }
@@ -23,7 +23,7 @@ export default async function skip(music: MoonlinkManager, guildId: string) {
     return playResponse;
   }
 
-  await player.skip();
+  player.stop();
 
   playResponse.response = ProcessResponses.TrackSkipped;
   return playResponse;
