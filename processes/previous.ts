@@ -3,13 +3,13 @@ import { ProcessResponses } from '../helpers/enums';
 import type { ProcessResponseType } from '../helpers/types';
 
 /**
- * Resumes lavalink player
+ * Plays the previous song
  *
  * @param music - Manager
  * @param guildId - Guild ID that the player is in
  * @returns Object containing a response of ProcessResponseType
  */
-export default async function pause(music: Manager, guildId: string) {
+export default async function previous(music: Manager, guildId: string) {
   const playResponse = {} as ProcessResponseType;
 
   const player = music.players.get(guildId);
@@ -18,13 +18,10 @@ export default async function pause(music: Manager, guildId: string) {
     return playResponse;
   }
 
-  if (!player?.paused) {
-    playResponse.response = ProcessResponses.PlayerBusy;
-    return playResponse;
-  }
+  // TODO: Errors out if using on the first song in the queue
+  // Also, it does nothing if the player is not playing.
+  player.previous();
 
-  player.pause(false);
-
-  playResponse.response = ProcessResponses.PlayerResumed;
+  playResponse.response = ProcessResponses.TrackLoaded;
   return playResponse;
 }

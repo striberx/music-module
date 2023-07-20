@@ -3,13 +3,13 @@ import { ProcessResponses } from '../helpers/enums';
 import type { ProcessResponseType } from '../helpers/types';
 
 /**
- * Resumes lavalink player
+ * Stops the player and clears the queue
  *
  * @param music - Manager
  * @param guildId - Guild ID that the player is in
  * @returns Object containing a response of ProcessResponseType
  */
-export default async function pause(music: Manager, guildId: string) {
+export default async function stop(music: Manager, guildId: string) {
   const playResponse = {} as ProcessResponseType;
 
   const player = music.players.get(guildId);
@@ -18,13 +18,9 @@ export default async function pause(music: Manager, guildId: string) {
     return playResponse;
   }
 
-  if (!player?.paused) {
-    playResponse.response = ProcessResponses.PlayerBusy;
-    return playResponse;
-  }
+  player.queue.clear();
+  player.stop();
 
-  player.pause(false);
-
-  playResponse.response = ProcessResponses.PlayerResumed;
+  playResponse.response = ProcessResponses.PlayerStopped;
   return playResponse;
 }

@@ -40,7 +40,7 @@ export default async function play(music: Manager, query: string, cmd: APIIntera
     case LoadTypes.NoMatches:
       return { response: ProcessResponses.NoMatches } as ProcessResponseType;
     case LoadTypes.PlaylistLoaded:
-      tracks = results.tracks;
+      tracks = results.playlist?.tracks;
       playResponse.playlistInfo = results.playlist;
       playResponse.response = ProcessResponses.PlaylistLoaded;
       break;
@@ -55,6 +55,8 @@ export default async function play(music: Manager, query: string, cmd: APIIntera
     default:
       return { response: ProcessResponses.LoadFailed } as ProcessResponseType;
   }
+
+  if (!tracks) return { response: ProcessResponses.LoadFailed } as ProcessResponseType;
 
   if (!player)
     player = await music.create({

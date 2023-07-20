@@ -5,3 +5,5 @@ export { default as pause } from './pause';
 export { default as skip } from './skip';
 export { default as resume } from './resume';
 export { default as loop } from './loop';
+export { default as previous } from './previous';
+export { default as stop } from './stop';

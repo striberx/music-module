@@ -11,6 +11,7 @@ export enum ProcessResponses {
   NoTrackRemoved = 'NO_TRACK_REMOVED',
   TrackSkipped = 'TRACK_SKIPPED',
   PlayerPaused = 'PLAYER_PAUSED',
+  PlayerStopped = 'PLAYER_STOPPED',
   PlayerDisconnected = 'PLAYER_DISCONNECTED',
   PlayerResumed = 'PLAYER_RESUMED',
   LoopDisabled = 'LOOP_DISABLED',
